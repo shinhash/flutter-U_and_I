@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               /// 화면 상단 글자 모음
               _Top(),
+
               /// 화면 하단 이미지
               _Bottom(),
             ],
@@ -35,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class _Top extends StatefulWidget {
   const _Top({super.key});
-
 
   @override
   State<_Top> createState() => _TopState();
@@ -73,6 +74,18 @@ class _TopState extends State<_Top> {
             ),
             IconButton(
               onPressed: () {
+                showCupertinoDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        color: Colors.white,
+                        height: 300,
+                      ),
+                    );
+                  },
+                );
                 setState(() {
                   likeCount++;
                 });
@@ -93,7 +106,6 @@ class _TopState extends State<_Top> {
     );
   }
 }
-
 
 class _Bottom extends StatelessWidget {
   const _Bottom({super.key});
