@@ -9,7 +9,35 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var likeCount = 1;
+  DateTime selectedDate = DateTime.now();
+
+  void onHeartPress() {
+    showCupertinoDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Align(
+          alignment: Alignment.center,
+          child: Container(
+            color: Colors.white,
+            height: 300,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.date,
+              initialDateTime: selectedDate,
+              maximumDate: DateTime.now(),
+              onDateTimeChanged: (DateTime dateInfo) {
+                print('Date info : ${dateInfo}');
+                setState(() {
+                  selectedDate = dateInfo;
+                });
+              },
+              dateOrder: DatePickerDateOrder.ymd,
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +51,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: [
               /// 화면 상단 글자 모음
-              _Top(),
+              _Top(
+                selectedDate: selectedDate,
+                onPressed: onHeartPress,
+              ),
 
               /// 화면 하단 이미지
               _Bottom(),
@@ -36,24 +67,29 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _Top extends StatefulWidget {
-  const _Top({super.key});
+  final DateTime selectedDate;
+  final VoidCallback? onPressed;
+
+  const _Top({
+    super.key,
+    required this.selectedDate,
+    required this.onPressed,
+  });
 
   @override
   State<_Top> createState() => _TopState();
 }
 
 class _TopState extends State<_Top> {
-  late int likeCount;
-
   @override
   void initState() {
-    likeCount = 0;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final today = DateTime.now();
 
     return Expanded(
       child: Container(
@@ -69,35 +105,19 @@ class _TopState extends State<_Top> {
               style: textTheme.displayMedium,
             ),
             Text(
-              '2024-10-11',
+              '${widget.selectedDate.year}-${widget.selectedDate.month}-${widget.selectedDate.day}',
               style: textTheme.bodyMedium,
             ),
             IconButton(
-              onPressed: () {
-                showCupertinoDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        color: Colors.white,
-                        height: 300,
-                      ),
-                    );
-                  },
-                );
-                setState(() {
-                  likeCount++;
-                });
-              },
-              icon: Icon(
+              onPressed: widget.onPressed,
+              icon: const Icon(
                 Icons.favorite,
                 color: Colors.red,
                 size: 50,
               ),
             ),
             Text(
-              'D + ${likeCount}',
+              'D + ${today.difference(widget.selectedDate).inDays + 1}',
               style: textTheme.bodyLarge,
             ),
           ],
